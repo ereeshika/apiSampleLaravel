@@ -15,6 +15,13 @@ class CreateFeedbackTable extends Migration
     {
         Schema::create('feedback', function (Blueprint $table) {
             $table->bigIncrements('id');
+            // cascade deletion with the related row
+            $table->integer('article_id')->unsigned()->index();
+            $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
+            //end of cascade deletion
+            $table->string('reader');
+            $table->text('commment');
+            $table->integer('rating');
             $table->timestamps();
         });
     }

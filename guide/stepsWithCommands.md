@@ -74,3 +74,11 @@ Declare routes with prefix from another
 > Route::group(['prefix'=>'articles'], function(){
 > Route::apiResource('/{article}/feedbacks', 'API\FeedBackController');
 > });
+
+#### cascade delete if the parent table row is deleted
+
+> // cascade deletion with the related row
+
+> \$table->integer('article_id')->unsigned()->index();
+
+> \$table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
