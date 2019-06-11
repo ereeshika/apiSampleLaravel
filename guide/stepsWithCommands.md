@@ -92,7 +92,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Feedback::class, function (Faker $faker) {
     return [
-        // link to row from parent table
+        // link to a row from parent table
         'article_id' => function () {
             return Article::all()->random();
         },
