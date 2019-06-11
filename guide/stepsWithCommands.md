@@ -1,4 +1,4 @@
-# Api Guide for ReSTful API with Laravel
+# Simple Guide for ReSTful API with Laravel
 
 ## Initating project
 
