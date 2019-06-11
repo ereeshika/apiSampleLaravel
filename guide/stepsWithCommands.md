@@ -54,11 +54,11 @@ php artisan make:model ModelName -a
 
 if you place your api related controllers in a separate file, you need to change below details of each controller file,
 
--   Update this line
+- Update this line
 
 > namespace App\Http\Controllers\FolderName;
 
--   Add this line
+- Add this line
 
 > use App\Http\Controllers\Controller;
 
@@ -79,9 +79,10 @@ Declare routes with prefix from another
 
 in the migration file
 
-> \$table->integer('article_id')->unsigned()->index();
-
-> \$table->foreign('article_id')->references('parentTablePK')->on('parentTable')->onDelete('cascade');
+```php
+ $table->integer('article_id')->unsigned()->index();
+ $table->foreign('article_id')->references('parentTablePK')->on('parentTable')->onDelete('cascade');
+```
 
 ### create factory and seeder
 
@@ -198,19 +199,19 @@ php artisan passport:install
 
 ### Configuration
 
-1. go to User.php (User model) and update
+- go to User.php (User model) and update
    > use HasApiTokens,Notifiable;
 
  Add below line to the top as well
    >use Laravel\Passport\HasApiTokens;
 
-2. in AuthService provider boot method
+- in AuthService provider boot method
    > Passport::routes();
 
 Add below line to the top as well
    > use Laravel\Passport\Passport;
 
-3. Last but not least inside config/auth.php
+- Last but not least inside config/auth.php
 
     ```php
         'api' => [
@@ -244,7 +245,7 @@ then
    ```
 
 4. Make the request and copy the access token from the result
-5. Then add a New Environment in POSTMAN and add variable **auth** with initial value 
+5. Then add a New Environment in POSTMAN and add variable **auth** with initial value
    > Bearer AccessTokenValue
 6. Finally you can use it in your request headers as follows
    >Key: Authorization Value:{{auth}}
