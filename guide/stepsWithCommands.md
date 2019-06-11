@@ -77,8 +77,28 @@ Declare routes with prefix from another
 
 #### cascade delete if the parent table row is deleted
 
-> // cascade deletion with the related row
+in the migration file
 
 > \$table->integer('article_id')->unsigned()->index();
 
-> \$table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
+> \$table->foreign('article_id')->references('parentTablePK')->on('parentTable')->onDelete('cascade');
+
+### create factory and seeder
+
+```php
+use App\Model\Article;
+use App\Model\Feedback;
+use Faker\Generator as Faker;
+
+$factory->define(Feedback::class, function (Faker $faker) {
+    return [
+        // link to row from parent table
+        'article_id' => function () {
+            return Article::all()->random();
+        },
+        'reader' => $faker->name,
+        'commment' => $faker->paragraph,
+        'rating' => $faker->numberBetween(0, 5)
+    ];
+});
+```
