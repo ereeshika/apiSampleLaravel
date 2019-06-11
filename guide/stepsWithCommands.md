@@ -2,37 +2,39 @@
 
 ## Initating project
 
-### create project
+### Basic setup to get the project up and running
+
+#### create project
 
 ```console
 php artisan composer create-project --prefer-dist laravel/laravel blog
 ```
 
-### install composer dependencies
+#### install composer dependencies
 
 ```console
 composer install
 ```
 
-### install npm dependencies
+#### install npm dependencies
 
 ```console
 npm install
 ```
 
-### generate app key
+#### generate app key
 
 ```console
 php artisan key:generate
 ```
 
-### run database migrations
+#### run database migrations
 
 ```console
 php artisan migrate
 ```
 
-### run app in the local environment
+#### run app in the local environment
 
 ```console
 php artisan serve
