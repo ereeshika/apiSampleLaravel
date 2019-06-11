@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Model\Feedback;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Model\Article;
+use App\Http\Resources\FeedbackResource;
 
 class FeedbackController extends Controller
 {
@@ -13,9 +15,9 @@ class FeedbackController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Article $article)
     {
-        return Feedback::all();
+        return FeedbackResource::collection($article->feedbacks);
     }
 
     /**
