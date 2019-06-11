@@ -102,3 +102,9 @@ $factory->define(Feedback::class, function (Faker $faker) {
     ];
 });
 ```
+
+run seeder
+
+```console
+php artisan db:seed
+```
