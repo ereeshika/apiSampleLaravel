@@ -72,5 +72,5 @@ On api.php
 Declare routes with prefix from another
 
 > Route::group(['prefix'=>'articles'], function(){
-> Route::apiResource('/{product}/feedbacks', 'FeedBackCotroller');
+> Route::apiResource('/{article}/feedbacks', 'API\FeedBackController');
 > });

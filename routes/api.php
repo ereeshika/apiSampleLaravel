@@ -11,5 +11,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource('/articles', 'API\FeedbackController');
 
 Route::group(['prefix' => 'articles'], function () {
-    Route::apiResource('/{article}/feedbacks', 'FeedBackCotroller');
+    Route::apiResource('/{article}/feedbacks', 'API\FeedBackController');
 });
