@@ -1,11 +1,11 @@
 <?php
+namespace App\Http\Controllers\API;
 
-namespace App\Http\Controllers;
-
-use App\Model\Article;
+use App\Model\Feedback;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ArticleController extends Controller
+class FeedbackController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,16 +13,6 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -41,33 +31,21 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Model\Article  $article
+     * @param  \App\Model\Feedback  $feedback
      * @return \Illuminate\Http\Response
      */
-    public function show(Article $article)
+    public function show(Feedback $feedback)
     {
         //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Model\Article  $article
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Article $article)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Model\Article  $article
+     * @param  \App\Model\Feedback  $feedback
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, Feedback $feedback)
     {
         //
     }
@@ -75,10 +53,10 @@ class ArticleController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Model\Article  $article
+     * @param  \App\Model\Feedback  $feedback
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy(Feedback $feedback)
     {
         //
     }

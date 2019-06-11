@@ -51,3 +51,26 @@ php artisan serve
 ```console
 php artisan make:model ModelName -a
 ```
+
+if you place your api related controllers in a separate file, you need to change below details of each controller file,
+
+-   Update this line
+
+> namespace App\Http\Controllers\FolderName;
+
+-   Add this line
+
+> use App\Http\Controllers\Controller;
+
+#### setup routes
+
+Using the beow notation resource will only declare api routes (index,store,show,update,destroy excluding create and edit).
+On api.php
+
+> Route::apiResource('/url', 'APIFolderName\ControllerName')
+
+Declare routes with prefix from another
+
+> Route::group(['prefix'=>'articles'], function(){
+> Route::apiResource('/{product}/feedbacks', 'FeedBackCotroller');
+> });
