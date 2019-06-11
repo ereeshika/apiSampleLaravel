@@ -54,11 +54,11 @@ php artisan make:model ModelName -a
 
 if you place your api related controllers in a separate file, you need to change below details of each controller file,
 
--   Update this line
+- Update this line
 
 > namespace App\Http\Controllers\FolderName;
 
--   Add this line
+- Add this line
 
 > use App\Http\Controllers\Controller;
 
@@ -79,9 +79,10 @@ Declare routes with prefix from another
 
 in the migration file
 
-> \$table->integer('article_id')->unsigned()->index();
-
-> \$table->foreign('article_id')->references('parentTablePK')->on('parentTable')->onDelete('cascade');
+```php
+ $table->integer('article_id')->unsigned()->index();
+ $table->foreign('article_id')->references('parentTablePK')->on('parentTable')->onDelete('cascade');
+```
 
 ### create factory and seeder
 
@@ -173,3 +174,78 @@ or
 ```console
 php artisan make:resource UserCollection
 ```
+
+## Laravel Passport Setup
+
+APIs typically use tokens to authenticate users and do not maintain session state between requests. Laravel makes API authentication a breeze using Laravel Passport, which provides a full OAuth2 server implementation.
+
+### installation
+
+```console
+composer require laravel/passport
+```
+
+then
+
+```console
+php artisan migrate
+```
+
+and finally
+
+```console
+php artisan passport:install
+```
+
+### Configuration
+
+- go to User.php (User model) and update
+   > use HasApiTokens,Notifiable;
+
+ Add below line to the top as well
+   >use Laravel\Passport\HasApiTokens;
+
+- in AuthService provider boot method
+   > Passport::routes();
+
+Add below line to the top as well
+   > use Laravel\Passport\Passport;
+
+- Last but not least inside config/auth.php
+
+    ```php
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+    ```
+
+### Get Access Token for POSTMAN
+
+1. Create a **POST** request to
+   > <http://127.0.0.1:8000/oauth/token>
+
+2. Add below headers
+   1. > Key :Accept Value:application/json
+   2. > Key :Content-type Value:application/json
+
+3. Add below body in raw format. Before doing that create user after enablin
+   > php artisan make:auth
+then
+
+   ```json
+   {
+    "grant_type" : "password",
+    "client_id" : "2",
+    "client_secret" : "0ORPAw7EjJbjGAx82mGr3Pnvm9XirYsgHX7aUp1U",
+    "username" : "user@test.com",
+    "password" : "test1234"
+    }
+   ```
+
+4. Make the request and copy the access token from the result
+5. Then add a New Environment in POSTMAN and add variable **auth** with initial value
+   > Bearer AccessTokenValue
+6. Finally you can use it in your request headers as follows
+   >Key: Authorization Value:{{auth}}
