@@ -2,6 +2,8 @@
 
 ## Initating project
 
+Basic setup to get the project up and running
+
 ### Basic setup to get the project up and running
 
 #### create project
@@ -38,4 +40,14 @@ php artisan migrate
 
 ```console
 php artisan serve
+```
+
+## Setting up api
+
+### some text
+
+#### Create a model with a migration, factory, and resource controller for the model
+
+```console
+php artisan make:model ModelName -a
 ```
