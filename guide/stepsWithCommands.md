@@ -54,11 +54,11 @@ php artisan make:model ModelName -a
 
 if you place your api related controllers in a separate file, you need to change below details of each controller file,
 
-- Update this line
+-   Update this line
 
 > namespace App\Http\Controllers\FolderName;
 
-- Add this line
+-   Add this line
 
 > use App\Http\Controllers\Controller;
 
@@ -163,7 +163,7 @@ class ArticleResource extends JsonResource
 
 Sometimes you may need to generate resources that are responsible for transforming collections of models. Which allows your response to include links and other meta information that is relevant to an entire collection of a given resource.
 
-To create a resource collection, you should use the --collection flag when creating the resource. Or, including the word Collection in the resource name will indicate to Laravel that it should create a collection resource. Collection resources extend the  Illuminate\Http\Resources\Json\ResourceCollection class:
+To create a resource collection, you should use the --collection flag when creating the resource. Or, including the word Collection in the resource name will indicate to Laravel that it should create a collection resource. Collection resources extend the Illuminate\Http\Resources\Json\ResourceCollection class:
 
 ```console
 php artisan make:resource Users --collection
@@ -199,19 +199,21 @@ php artisan passport:install
 
 ### Configuration
 
-- go to User.php (User model) and update
-   > use HasApiTokens,Notifiable;
-
- Add below line to the top as well
-   >use Laravel\Passport\HasApiTokens;
-
-- in AuthService provider boot method
-   > Passport::routes();
+-   go to User.php (User model) and update
+    > use HasApiTokens,Notifiable;
 
 Add below line to the top as well
-   > use Laravel\Passport\Passport;
 
-- Last but not least inside config/auth.php
+> use Laravel\Passport\HasApiTokens;
+
+-   in AuthService provider boot method
+    > Passport::routes();
+
+Add below line to the top as well
+
+> use Laravel\Passport\Passport;
+
+-   Last but not least inside config/auth.php
 
     ```php
         'api' => [
@@ -224,28 +226,47 @@ Add below line to the top as well
 ### Get Access Token for POSTMAN
 
 1. Create a **POST** request to
-   > <http://127.0.0.1:8000/oauth/token>
+
+    > <http://127.0.0.1:8000/oauth/token>
 
 2. Add below headers
-   1. > Key :Accept Value:application/json
-   2. > Key :Content-type Value:application/json
+
+    1. > Key :Accept Value:application/json
+    2. > Key :Content-type Value:application/json
 
 3. Add below body in raw format. Before doing that create user after enablin
-   > php artisan make:auth
-then
 
-   ```json
-   {
-    "grant_type" : "password",
-    "client_id" : "2",
-    "client_secret" : "0ORPAw7EjJbjGAx82mGr3Pnvm9XirYsgHX7aUp1U",
-    "username" : "user@test.com",
-    "password" : "test1234"
+    > php artisan make:auth
+    > then
+
+    ```json
+    {
+        "grant_type": "password",
+        "client_id": "2",
+        "client_secret": "0ORPAw7EjJbjGAx82mGr3Pnvm9XirYsgHX7aUp1U",
+        "username": "user@test.com",
+        "password": "test1234"
     }
-   ```
+    ```
 
 4. Make the request and copy the access token from the result
 5. Then add a New Environment in POSTMAN and add variable **auth** with initial value
-   > Bearer AccessTokenValue
+    > Bearer AccessTokenValue
 6. Finally you can use it in your request headers as follows
-   >Key: Authorization Value:{{auth}}
+    > Key: Authorization Value:{{auth}}
+
+## API Resources for CREATE, UPDATE, DELETE
+
+### Create (Store)
+
+1. Create Request file to handle Data Validation
+
+    ```console
+    php artisan make:request NameRequest
+    ```
+
+2. line end
+
+### Update
+
+### Delete
