@@ -346,4 +346,34 @@ In the controller file,
 
 ### Update
 
+1. Most of the time we won't change everything but only a selected few. To achieve this we need to add a protected fillable in the related data Model File as follows,
+
+   ```php
+     // handle both mass and single updates
+     <!-- These Fillables must be the exact column names similar to the db -->
+    protected $fillable = [
+        'title', 'details', 'price', 'availableCopies', 'discount'
+    ];
+    ```
+
+2. Then we need to write our update function. Here we need to handle the difference between request and database table column names, if there are any as well,
+
+   ```php
+     public function update(Request $request, Article $article)
+    {
+
+        // When column name is different from the request, we need to assign that to the correct column and disable it.
+        $request['details'] = $request->content;
+        $request['availableCopies'] = $request->stock;
+        unset($request['content'], $request['stock']);
+
+        $article->update($request->all());
+        return response([
+            'data' => new ArticleResource($article)
+        ], Response::HTTP_OK);
+    }
+   ```
+
+3. jrite
+
 ### Delete
