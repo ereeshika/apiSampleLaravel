@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Article\ArticleResource;
 use App\Http\Resources\Article\ArticleCollection;
+use App\Http\Requests\ArticleRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 class ArticleController extends Controller
 {
@@ -30,9 +32,18 @@ class ArticleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ArticleRequest $request)
     {
-        return 'sesky boy';
+        $article = new Article;
+        $article->title = $request->title;
+        $article->details = $request->details;
+        $article->price = $request->price;
+        $article->availableCopies = $request->availableCopies;
+        $article->discount = $request->discount;
+        $article->save();
+        return response([
+            'data' => new ArticleResource($article)
+        ], Response::HTTP_CREATED);
     }
 
     /**

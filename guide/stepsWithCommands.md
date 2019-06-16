@@ -54,11 +54,11 @@ php artisan make:model ModelName -a
 
 if you place your api related controllers in a separate file, you need to change below details of each controller file,
 
--   Update this line
+- Update this line
 
 > namespace App\Http\Controllers\FolderName;
 
--   Add this line
+- Add this line
 
 > use App\Http\Controllers\Controller;
 
@@ -199,21 +199,21 @@ php artisan passport:install
 
 ### Configuration
 
--   go to User.php (User model) and update
+- go to User.php (User model) and update
     > use HasApiTokens,Notifiable;
 
 Add below line to the top as well
 
 > use Laravel\Passport\HasApiTokens;
 
--   in AuthService provider boot method
+- in AuthService provider boot method
     > Passport::routes();
 
 Add below line to the top as well
 
 > use Laravel\Passport\Passport;
 
--   Last but not least inside config/auth.php
+- Last but not least inside config/auth.php
 
     ```php
         'api' => [
@@ -257,15 +257,92 @@ Add below line to the top as well
 
 ## API Resources for CREATE, UPDATE, DELETE
 
+### Protecting routes with api auth
+
+In the controller file,
+
+```php
+   public function __construct()
+    {
+        $this->middleware('auth:api')->except('index', 'show');
+    }
+```
+
 ### Create (Store)
 
-1. Create Request file to handle Data Validation
+1. Create Request file to handle Data Validation.
 
     ```console
     php artisan make:request NameRequest
     ```
 
-2. line end
+2. Go to created Request file, and toggle authorize to true.
+
+    ```php
+        public function authorize()
+    {
+        return true;
+    }
+    ```
+
+3. In the same file under **_rules()_** functions write required validations.
+
+    ```php
+    public function rules()
+     {
+         return [
+             'title' => 'required|max:255|unique:articles',
+             'details' => 'required',
+             'price' => 'required|max:6',
+             'availableCopies' => 'required|max:5',
+             'discount' => 'required|max:2'
+             // max means the maximum number of characters
+         ];
+     }
+    ```
+
+4. Simlialrly write a **_messages()_** to customize default validation messages.
+
+    ```php
+        public function messages()
+    {
+        return [
+            'title.required' => "title can't be empty",
+            'title.max' => "title can't have more than 255 characters including spaces",
+            'title.unique' => "title must be unique",
+            'price.required' => "Price field can't be empty",
+            'price.max' => 'Price must be equal or less than 999,999',
+        ];
+    }
+    ```
+
+5. Then write the store fucntion in the controller
+   - First make these two imports
+
+    ```php
+    <!-- Request File -->
+    use App\Http\Requests\ArticleRequest;
+    <!-- HTTP_Response Handler -->
+    use Symfony\Component\HttpFoundation\Response;
+    ```
+
+   - Then the function
+
+    ```php
+       public function store(ArticleRequest $request)
+    {
+        $article = new Article;
+        $article->title = $request->title;
+        $article->details = $request->details;
+        $article->price = $request->price;
+        $article->availableCopies = $request->availableCopies;
+        $article->discount = $request->discount;
+        $article->save();
+        return response([
+            'data' => new ArticleResource($article)
+        ], Response::HTTP_CREATED);
+    }
+    ```
 
 ### Update
 
