@@ -25,9 +25,9 @@ class ArticleRequest extends FormRequest
     {
         return [
             'title' => 'required|max:255|unique:articles',
-            'details' => 'required',
+            'content' => 'required',
             'price' => 'required|max:6',
-            'availableCopies' => 'required|max:5',
+            'stock' => 'required|max:5',
             'discount' => 'required|max:2'
             // max means the maximum number of characters
         ];
@@ -40,13 +40,13 @@ class ArticleRequest extends FormRequest
             'title.max' => "title can't have more than 255 characters including spaces",
             'title.unique' => "title must be unique",
 
-            'details.required' => "Content field can't be empty",
+            'content.required' => "Content field can't be empty",
 
             'price.required' => "Price field can't be empty",
             'price.max' => 'Price must be equal or less than 999,999',
 
-            'availableCopies.required' => "Stock field can't be empty",
-            'availableCopies.max' => 'Stock amount must be equal or less than 99,999',
+            'stock.required' => "Stock field can't be empty",
+            'stock.max' => 'Stock amount must be equal or less than 99,999',
 
             'discount.required' => "Discount field can't be empty",
             'discount.max' => 'Discount amount must be equal or less than 99'

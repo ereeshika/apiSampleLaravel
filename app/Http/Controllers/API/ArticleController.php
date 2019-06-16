@@ -36,9 +36,9 @@ class ArticleController extends Controller
     {
         $article = new Article;
         $article->title = $request->title;
-        $article->details = $request->details;
+        $article->details = $request->content;
         $article->price = $request->price;
-        $article->availableCopies = $request->availableCopies;
+        $article->availableCopies = $request->stock;
         $article->discount = $request->discount;
         $article->save();
         return response([
@@ -66,7 +66,15 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        //
+
+        // When column name is different from the request, we need to assign that to the correct column and disable it.
+        $request['details'] = $request->content;
+        $request['availableCopies'] = $request->stock;
+        unset($request['content'], $request['stock']);
+        $article->update($request->all());
+        return response([
+            'data' => new ArticleResource($article)
+        ], Response::HTTP_OK);
     }
 
     /**
