@@ -374,6 +374,14 @@ In the controller file,
     }
    ```
 
-3. jrite
-
 ### Delete
+
+Inside the controller
+
+```php
+public function destroy(Article $article)
+    {
+        $article->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
+    }
+```
