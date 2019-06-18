@@ -163,7 +163,7 @@ class ArticleResource extends JsonResource
 
 Sometimes you may need to generate resources that are responsible for transforming collections of models. Which allows your response to include links and other meta information that is relevant to an entire collection of a given resource.
 
-To create a resource collection, you should use the --collection flag when creating the resource. Or, including the word Collection in the resource name will indicate to Laravel that it should create a collection resource. Collection resources extend the  Illuminate\Http\Resources\Json\ResourceCollection class:
+To create a resource collection, you should use the --collection flag when creating the resource. Or, including the word Collection in the resource name will indicate to Laravel that it should create a collection resource. Collection resources extend the Illuminate\Http\Resources\Json\ResourceCollection class:
 
 ```console
 php artisan make:resource Users --collection
@@ -200,16 +200,18 @@ php artisan passport:install
 ### Configuration
 
 - go to User.php (User model) and update
-   > use HasApiTokens,Notifiable;
-
- Add below line to the top as well
-   >use Laravel\Passport\HasApiTokens;
-
-- in AuthService provider boot method
-   > Passport::routes();
+    > use HasApiTokens,Notifiable;
 
 Add below line to the top as well
-   > use Laravel\Passport\Passport;
+
+> use Laravel\Passport\HasApiTokens;
+
+- in AuthService provider boot method
+    > Passport::routes();
+
+Add below line to the top as well
+
+> use Laravel\Passport\Passport;
 
 - Last but not least inside config/auth.php
 
@@ -224,28 +226,162 @@ Add below line to the top as well
 ### Get Access Token for POSTMAN
 
 1. Create a **POST** request to
-   > <http://127.0.0.1:8000/oauth/token>
+
+    > <http://127.0.0.1:8000/oauth/token>
 
 2. Add below headers
-   1. > Key :Accept Value:application/json
-   2. > Key :Content-type Value:application/json
+
+    1. > Key :Accept Value:application/json
+    2. > Key :Content-type Value:application/json
 
 3. Add below body in raw format. Before doing that create user after enablin
-   > php artisan make:auth
-then
 
-   ```json
-   {
-    "grant_type" : "password",
-    "client_id" : "2",
-    "client_secret" : "0ORPAw7EjJbjGAx82mGr3Pnvm9XirYsgHX7aUp1U",
-    "username" : "user@test.com",
-    "password" : "test1234"
+    > php artisan make:auth
+    > then
+
+    ```json
+    {
+        "grant_type": "password",
+        "client_id": "2",
+        "client_secret": "0ORPAw7EjJbjGAx82mGr3Pnvm9XirYsgHX7aUp1U",
+        "username": "user@test.com",
+        "password": "test1234"
     }
-   ```
+    ```
 
 4. Make the request and copy the access token from the result
 5. Then add a New Environment in POSTMAN and add variable **auth** with initial value
-   > Bearer AccessTokenValue
+    > Bearer AccessTokenValue
 6. Finally you can use it in your request headers as follows
-   >Key: Authorization Value:{{auth}}
+    > Key: Authorization Value:{{auth}}
+
+## API Resources for CREATE, UPDATE, DELETE
+
+### Protecting routes with api auth
+
+In the controller file,
+
+```php
+   public function __construct()
+    {
+        $this->middleware('auth:api')->except('index', 'show');
+    }
+```
+
+### Create (Store)
+
+1. Create Request file to handle Data Validation.
+
+    ```console
+    php artisan make:request NameRequest
+    ```
+
+2. Go to created Request file, and toggle authorize to true.
+
+    ```php
+        public function authorize()
+    {
+        return true;
+    }
+    ```
+
+3. In the same file under **_rules()_** functions write required validations.
+
+    ```php
+    public function rules()
+     {
+         return [
+             'title' => 'required|max:255|unique:articles',
+             'details' => 'required',
+             'price' => 'required|max:6',
+             'availableCopies' => 'required|max:5',
+             'discount' => 'required|max:2'
+             // max means the maximum number of characters
+         ];
+     }
+    ```
+
+4. Simlialrly write a **_messages()_** to customize default validation messages.
+
+    ```php
+        public function messages()
+    {
+        return [
+            'title.required' => "title can't be empty",
+            'title.max' => "title can't have more than 255 characters including spaces",
+            'title.unique' => "title must be unique",
+            'price.required' => "Price field can't be empty",
+            'price.max' => 'Price must be equal or less than 999,999',
+        ];
+    }
+    ```
+
+5. Then write the store fucntion in the controller
+   - First make these two imports
+
+    ```php
+    <!-- Request File -->
+    use App\Http\Requests\ArticleRequest;
+    <!-- HTTP_Response Handler -->
+    use Symfony\Component\HttpFoundation\Response;
+    ```
+
+   - Then the function
+
+    ```php
+       public function store(ArticleRequest $request)
+    {
+        $article = new Article;
+        $article->title = $request->title;
+        $article->details = $request->details;
+        $article->price = $request->price;
+        $article->availableCopies = $request->availableCopies;
+        $article->discount = $request->discount;
+        $article->save();
+        return response([
+            'data' => new ArticleResource($article)
+        ], Response::HTTP_CREATED);
+    }
+    ```
+
+### Update
+
+1. Most of the time we won't change everything but only a selected few. To achieve this we need to add a protected fillable in the related data Model File as follows,
+
+   ```php
+     // handle both mass and single updates
+     <!-- These Fillables must be the exact column names similar to the db -->
+    protected $fillable = [
+        'title', 'details', 'price', 'availableCopies', 'discount'
+    ];
+    ```
+
+2. Then we need to write our update function. Here we need to handle the difference between request and database table column names, if there are any as well,
+
+   ```php
+     public function update(Request $request, Article $article)
+    {
+
+        // When column name is different from the request, we need to assign that to the correct column and disable it.
+        $request['details'] = $request->content;
+        $request['availableCopies'] = $request->stock;
+        unset($request['content'], $request['stock']);
+
+        $article->update($request->all());
+        return response([
+            'data' => new ArticleResource($article)
+        ], Response::HTTP_OK);
+    }
+   ```
+
+### Delete
+
+Inside the controller
+
+```php
+public function destroy(Article $article)
+    {
+        $article->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
+    }
+```
